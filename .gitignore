@@ -23,3 +23,14 @@
 hs_err_pid*
 webapp/*
 /webapp/
+*.css
+*.map
+*.eot
+*.svg
+*.jpg
+*.png
+*.gif
+*.js
+*.woff2
+*.ttf
+*.woff
