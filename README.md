@@ -1,26 +1,26 @@
 # EC-Website-SpringBoot
 Based on SpringBoot.
 
-Basic: SpringBoot
+**Basic**: SpringBoot
 
-Controller layer: SpringMVC
+**Controller layer**: SpringMVC
 
-Build tool: Maven
+**Build tool**: Maven
 
-Container: Tomcat (is already included in SpringBoot)
+**Container**: Tomcat (is already included in SpringBoot)
 
-Template engine: Thymeleaf
+**Template engine**: Thymeleaf
 
-Bootstrap/Vue.js
+**Bootstrap/Vue.js**
 
-Ajax: Axios.js
+**Ajax**: Axios.js
 
-Standard RESTFUL API
+**Standard RESTFUL API**
 
-Nginx
+**Nginx**
 
-Auth: Shiro
+**Auth**: Shiro
 
-Cache: Redis
+**Cache**: Redis
 
-Search engine: ElasticSearch
+**Search engine**: ElasticSearch
