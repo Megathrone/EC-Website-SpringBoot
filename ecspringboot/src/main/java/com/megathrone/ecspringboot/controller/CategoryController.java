@@ -12,7 +12,7 @@ public class CategoryController {
   @Autowired CategoryService categoryService;
 
   @GetMapping("/categories")
-  public List<Category> list() throws Exception {
+  public List<Category> list() {
     return categoryService.list();
   }
 }
