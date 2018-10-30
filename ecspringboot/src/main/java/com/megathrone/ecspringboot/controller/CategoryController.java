@@ -10,7 +10,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +38,15 @@ public class CategoryController {
     categoryService.add(bean);
     saveOrUpdateImageFile(bean, image, request);
     return bean;
+  }
+
+  @DeleteMapping("/categories/{id}")
+  public String delete(@PathVariable("id") int id, HttpServletRequest request) throws Exception {
+    categoryService.delete(id);
+    File imageFolder = new File(request.getServletContext().getRealPath("img/category"));
+    File file = new File(imageFolder, id + ".jpg");
+    file.delete();
+    return null;
   }
 
   public void saveOrUpdateImageFile(Category bean, MultipartFile image, HttpServletRequest request)
