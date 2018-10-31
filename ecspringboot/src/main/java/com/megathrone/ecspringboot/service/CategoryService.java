@@ -28,11 +28,20 @@ public class CategoryService {
     return categoryDAO.findAll(sort);
   }
 
-  public void add(Category category){
+  public void add(Category category) {
     categoryDAO.save(category);
   }
 
-  public void delete(int id){
+  public void delete(int id) {
     categoryDAO.deleteById(id);
+  }
+
+  public Category get(int id) {
+    Category category = categoryDAO.getOne(id);
+    return category;
+  }
+
+  public void update(Category category) {
+    categoryDAO.save(category);
   }
 }
