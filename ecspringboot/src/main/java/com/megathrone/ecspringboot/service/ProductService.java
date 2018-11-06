@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
+
   @Autowired ProductDAO productDAO;
   @Autowired CategoryService categoryService;
 
-  public void add(Product product) {
-    productDAO.save(product);
+  public void add(Product bean) {
+    productDAO.save(bean);
   }
 
   public void delete(int id) {
@@ -28,8 +29,8 @@ public class ProductService {
     return productDAO.findById(id).get();
   }
 
-  public void update(Product product) {
-    productDAO.save(product);
+  public void update(Product bean) {
+    productDAO.save(bean);
   }
 
   public PageForNavigator<Product> list(int cid, int start, int size, int navigatePages) {
