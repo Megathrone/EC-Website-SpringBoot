@@ -2,6 +2,7 @@ package com.megathrone.ecspringboot.controller;
 
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.service.CategoryService;
+import com.megathrone.ecspringboot.service.ProductImageService;
 import com.megathrone.ecspringboot.service.ProductService;
 import com.megathrone.ecspringboot.util.PageForNavigator;
 import java.util.Date;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProductController {
   @Autowired ProductService productService;
-
   @Autowired CategoryService categoryService;
+  @Autowired ProductImageService productImageService;
 
   @GetMapping("/categories/{cid}/products")
   public PageForNavigator<Product> list(
@@ -30,20 +31,23 @@ public class ProductController {
       throws Exception {
     start = start < 0 ? 0 : start;
     PageForNavigator<Product> page = productService.list(cid, start, size, 5);
+
+    productImageService.setFirstProdutImages(page.getContent());
+
     return page;
   }
 
-  @GetMapping("/product/{id}")
+  @GetMapping("/products/{id}")
   public Product get(@PathVariable("id") int id) throws Exception {
-    Product product = productService.get(id);
-    return product;
+    Product bean = productService.get(id);
+    return bean;
   }
 
   @PostMapping("/products")
-  public Object add(@RequestBody Product product) throws Exception {
-    product.setCreateDate(new Date());
-    productService.add(product);
-    return product;
+  public Object add(@RequestBody Product bean) throws Exception {
+    bean.setCreateDate(new Date());
+    productService.add(bean);
+    return bean;
   }
 
   @DeleteMapping("/products/{id}")
@@ -53,8 +57,8 @@ public class ProductController {
   }
 
   @PutMapping("/products")
-  public Object update(@RequestBody Product product) throws Exception {
-    productService.update(product);
-    return product;
+  public Object update(@RequestBody Product bean) throws Exception {
+    productService.update(bean);
+    return bean;
   }
 }
