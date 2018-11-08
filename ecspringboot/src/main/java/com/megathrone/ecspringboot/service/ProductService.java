@@ -3,7 +3,7 @@ package com.megathrone.ecspringboot.service;
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.dao.ProductDAO;
-import com.megathrone.ecspringboot.util.PageForNavigator;
+import com.megathrone.ecspringboot.util.Page4Navigator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,11 +33,11 @@ public class ProductService {
     productDAO.save(bean);
   }
 
-  public PageForNavigator<Product> list(int cid, int start, int size, int navigatePages) {
+  public Page4Navigator<Product> list(int cid, int start, int size, int navigatePages) {
     Category category = categoryService.get(cid);
     Sort sort = new Sort(Sort.Direction.DESC, "id");
     Pageable pageable = new PageRequest(start, size, sort);
     Page<Product> pageFromJPA = productDAO.findByCategory(category, pageable);
-    return new PageForNavigator<>(pageFromJPA, navigatePages);
+    return new Page4Navigator<>(pageFromJPA, navigatePages);
   }
 }

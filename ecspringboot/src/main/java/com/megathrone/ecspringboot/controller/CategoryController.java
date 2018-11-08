@@ -3,7 +3,7 @@ package com.megathrone.ecspringboot.controller;
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.service.CategoryService;
 import com.megathrone.ecspringboot.util.ImageUtil;
-import com.megathrone.ecspringboot.util.PageForNavigator;
+import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +24,12 @@ public class CategoryController {
   @Autowired CategoryService categoryService;
 
   @GetMapping("/categories")
-  public PageForNavigator<Category> list(
+  public Page4Navigator<Category> list(
       @RequestParam(value = "start", defaultValue = "0") int start,
       @RequestParam(value = "size", defaultValue = "5") int size)
       throws Exception {
     start = start < 0 ? 0 : start;
-    PageForNavigator<Category> page = categoryService.list(start, size, 5);
+    Page4Navigator<Category> page = categoryService.list(start, size, 5);
     return page;
   }
 

@@ -3,7 +3,7 @@ package com.megathrone.ecspringboot.util;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public class PageForNavigator<T> {
+public class Page4Navigator<T> {
   Page<T> pageFromJPA;
   int navigatePages;
 
@@ -31,9 +31,9 @@ public class PageForNavigator<T> {
 
   int[] navigatepageNums;
 
-  public PageForNavigator() {}
+  public Page4Navigator() {}
 
-  public PageForNavigator(Page<T> pageFromJPA, int navigatePages) {
+  public Page4Navigator(Page<T> pageFromJPA, int navigatePages) {
     this.pageFromJPA = pageFromJPA;
     this.navigatePages = navigatePages;
 

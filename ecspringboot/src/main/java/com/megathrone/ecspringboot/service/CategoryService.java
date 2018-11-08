@@ -2,7 +2,7 @@ package com.megathrone.ecspringboot.service;
 
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.dao.CategoryDAO;
-import com.megathrone.ecspringboot.util.PageForNavigator;
+import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class CategoryService {
   @Autowired CategoryDAO categoryDAO;
 
-  public PageForNavigator<Category> list(int start, int size, int navigatePages) {
+  public Page4Navigator<Category> list(int start, int size, int navigatePages) {
     Sort sort = new Sort(Sort.Direction.DESC, "id");
     Pageable pageable = new PageRequest(start, size, sort);
     Page pageFromJPA = categoryDAO.findAll(pageable);
 
-    return new PageForNavigator<>(pageFromJPA, navigatePages);
+    return new Page4Navigator<>(pageFromJPA, navigatePages);
   }
 
   public List<Category> list() {
@@ -28,8 +28,8 @@ public class CategoryService {
     return categoryDAO.findAll(sort);
   }
 
-  public void add(Category category) {
-    categoryDAO.save(category);
+  public void add(Category bean) {
+    categoryDAO.save(bean);
   }
 
   public void delete(int id) {
@@ -37,11 +37,11 @@ public class CategoryService {
   }
 
   public Category get(int id) {
-    Category category = categoryDAO.getOne(id);
-    return category;
+    Category c = categoryDAO.findById(id).get();
+    return c;
   }
 
-  public void update(Category category) {
-    categoryDAO.save(category);
+  public void update(Category bean) {
+    categoryDAO.save(bean);
   }
 }

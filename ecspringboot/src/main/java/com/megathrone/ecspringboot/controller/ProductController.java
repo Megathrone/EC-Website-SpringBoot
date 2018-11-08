@@ -4,7 +4,7 @@ import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.service.CategoryService;
 import com.megathrone.ecspringboot.service.ProductImageService;
 import com.megathrone.ecspringboot.service.ProductService;
-import com.megathrone.ecspringboot.util.PageForNavigator;
+import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ public class ProductController {
   @Autowired ProductImageService productImageService;
 
   @GetMapping("/categories/{cid}/products")
-  public PageForNavigator<Product> list(
+  public Page4Navigator<Product> list(
       @PathVariable("cid") int cid,
       @RequestParam(value = "start", defaultValue = "0") int start,
       @RequestParam(value = "size", defaultValue = "5") int size)
       throws Exception {
     start = start < 0 ? 0 : start;
-    PageForNavigator<Product> page = productService.list(cid, start, size, 5);
+    Page4Navigator<Product> page = productService.list(cid, start, size, 5);
 
     productImageService.setFirstProdutImages(page.getContent());
 

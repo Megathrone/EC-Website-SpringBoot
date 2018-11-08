@@ -3,7 +3,8 @@ package com.megathrone.ecspringboot.service;
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.bean.Property;
 import com.megathrone.ecspringboot.dao.PropertyDAO;
-import com.megathrone.ecspringboot.util.PageForNavigator;
+import com.megathrone.ecspringboot.util.Page4Navigator;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,7 @@ public class PropertyService {
     propertyDAO.save(bean);
   }
 
-  public PageForNavigator<Property> list(int cid, int start, int size, int navigatePages) {
+  public Page4Navigator<Property> list(int cid, int start, int size, int navigatePages) {
     Category category = categoryService.get(cid);
 
     Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -41,6 +42,10 @@ public class PropertyService {
 
     Page<Property> pageFromJPA = propertyDAO.findByCategory(category, pageable);
 
-    return new PageForNavigator<>(pageFromJPA, navigatePages);
+    return new Page4Navigator<>(pageFromJPA, navigatePages);
+  }
+
+  public List<Property> listByCategory(Category category) {
+    return propertyDAO.findByCategory(category);
   }
 }
