@@ -52,19 +52,24 @@ public class CategoryService {
 
   public void removeCategoryFromProduct(Category category) {
     List<Product> products = category.getProducts();
-
     products
         .stream()
         .filter(product -> product != null)
-        .forEach(product -> product.setCategory(null));
+        .forEach(
+            product -> {
+              product.setCategory(null);
+            });
 
-    List<List<Product>> productByRow = category.getProductByRow();
-    if (productByRow != null) {
-      productByRow
+    List<List<Product>> productsByRow = category.getProductsByRow();
+    if (null != productsByRow) {
+      productsByRow
           .stream()
           .forEach(
               ps -> {
-                ps.stream().forEach(p -> p.setCategory(null));
+                ps.forEach(
+                    product -> {
+                      product.setCategory(null);
+                    });
               });
     }
   }
