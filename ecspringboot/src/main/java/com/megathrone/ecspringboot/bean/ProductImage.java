@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "productimage")
+@Table(name = "productImage")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class ProductImage {
 

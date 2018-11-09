@@ -1,4 +1,4 @@
-package com.megathrone.ecspringboot.controller;
+package com.megathrone.ecspringboot.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

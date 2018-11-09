@@ -14,7 +14,6 @@ import javax.persistence.Table;
 @Table(name = "orderItem")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class OrderItem {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -34,12 +33,12 @@ public class OrderItem {
 
   private int number;
 
-  public int getId() {
-    return id;
+  public int getNumber() {
+    return number;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setNumber(int number) {
+    this.number = number;
   }
 
   public Product getProduct() {
@@ -66,11 +65,11 @@ public class OrderItem {
     this.user = user;
   }
 
-  public int getNumber() {
-    return number;
+  public int getId() {
+    return id;
   }
 
-  public void setNumber(int number) {
-    this.number = number;
+  public void setId(int id) {
+    this.id = id;
   }
 }

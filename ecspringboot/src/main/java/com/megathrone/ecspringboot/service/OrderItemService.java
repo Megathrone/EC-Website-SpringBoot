@@ -13,9 +13,7 @@ public class OrderItemService {
   @Autowired ProductImageService productImageService;
 
   public void fill(List<Order> orders) {
-    for (Order order : orders) {
-      fill(order);
-    }
+    for (Order order : orders) fill(order);
   }
 
   public void fill(Order order) {

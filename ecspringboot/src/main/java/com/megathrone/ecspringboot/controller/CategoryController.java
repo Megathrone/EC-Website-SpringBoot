@@ -1,4 +1,4 @@
-package com.megathrone.ecspringboot.controller;
+package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.service.CategoryService;
@@ -29,7 +29,8 @@ public class CategoryController {
       @RequestParam(value = "size", defaultValue = "5") int size)
       throws Exception {
     start = start < 0 ? 0 : start;
-    Page4Navigator<Category> page = categoryService.list(start, size, 5);
+    Page4Navigator<Category> page =
+        categoryService.list(start, size, 5); // 5表示导航分页最多有5个，像 [1,2,3,4,5] 这样
     return page;
   }
 
@@ -39,6 +40,16 @@ public class CategoryController {
     categoryService.add(bean);
     saveOrUpdateImageFile(bean, image, request);
     return bean;
+  }
+
+  public void saveOrUpdateImageFile(Category bean, MultipartFile image, HttpServletRequest request)
+      throws IOException {
+    File imageFolder = new File(request.getServletContext().getRealPath("img/category"));
+    File file = new File(imageFolder, bean.getId() + ".jpg");
+    if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+    image.transferTo(file);
+    BufferedImage img = ImageUtil.change2jpg(file);
+    ImageIO.write(img, "jpg", file);
   }
 
   @DeleteMapping("/categories/{id}")
@@ -52,31 +63,20 @@ public class CategoryController {
 
   @GetMapping("/categories/{id}")
   public Category get(@PathVariable("id") int id) throws Exception {
-    Category category = categoryService.get(id);
-    return category;
+    Category bean = categoryService.get(id);
+    return bean;
   }
 
   @PutMapping("/categories/{id}")
-  public Object update(Category category, MultipartFile image, HttpServletRequest request)
-      throws IOException {
+  public Object update(Category bean, MultipartFile image, HttpServletRequest request)
+      throws Exception {
     String name = request.getParameter("name");
-    category.setName(name);
-    categoryService.update(category);
+    bean.setName(name);
+    categoryService.update(bean);
 
     if (image != null) {
-      saveOrUpdateImageFile(category, image, request);
+      saveOrUpdateImageFile(bean, image, request);
     }
-
-    return category;
-  }
-
-  public void saveOrUpdateImageFile(Category bean, MultipartFile image, HttpServletRequest request)
-      throws IOException {
-    File imageFolder = new File(request.getServletContext().getRealPath("img/category"));
-    File file = new File(imageFolder, bean.getId() + ".jpg");
-    if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-    image.transferTo(file);
-    BufferedImage img = ImageUtil.change2jpg(file);
-    ImageIO.write(img, "jpg", file);
+    return bean;
   }
 }

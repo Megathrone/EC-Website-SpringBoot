@@ -47,30 +47,26 @@ public class CategoryService {
   }
 
   public void removeCategoryFromProduct(List<Category> cs) {
-    cs.stream().forEach(this::removeCategoryFromProduct);
+    for (Category category : cs) {
+      removeCategoryFromProduct(category);
+    }
   }
 
   public void removeCategoryFromProduct(Category category) {
     List<Product> products = category.getProducts();
-    products
-        .stream()
-        .filter(product -> product != null)
-        .forEach(
-            product -> {
-              product.setCategory(null);
-            });
+    if (null != products) {
+      for (Product product : products) {
+        product.setCategory(null);
+      }
+    }
 
     List<List<Product>> productsByRow = category.getProductsByRow();
     if (null != productsByRow) {
-      productsByRow
-          .stream()
-          .forEach(
-              ps -> {
-                ps.forEach(
-                    product -> {
-                      product.setCategory(null);
-                    });
-              });
+      for (List<Product> ps : productsByRow) {
+        for (Product p : ps) {
+          p.setCategory(null);
+        }
+      }
     }
   }
 }

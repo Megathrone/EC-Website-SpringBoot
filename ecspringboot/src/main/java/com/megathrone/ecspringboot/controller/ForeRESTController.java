@@ -1,4 +1,4 @@
-package com.megathrone.ecspringboot.controller;
+package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.bean.User;
@@ -7,6 +7,7 @@ import com.megathrone.ecspringboot.service.ProductService;
 import com.megathrone.ecspringboot.service.UserService;
 import com.megathrone.ecspringboot.util.Result;
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class ForeRESTController {
     productService.fill(cs);
     productService.fillByRow(cs);
     categoryService.removeCategoryFromProduct(cs);
+
     return cs;
   }
 
@@ -38,11 +40,29 @@ public class ForeRESTController {
     boolean exist = userService.isExist(name);
 
     if (exist) {
-      String message = "User exists";
+      String message = "用户名已经被使用,不能使用";
       return Result.fail(message);
     }
+
     user.setPassword(password);
+
     userService.add(user);
+
     return Result.success();
+  }
+
+  @PostMapping("/forelogin")
+  public Object login(@RequestBody User userParam, HttpSession session) {
+    String name = userParam.getName();
+    name = HtmlUtils.htmlEscape(name);
+
+    User user = userService.get(name, userParam.getPassword());
+    if (null == user) {
+      String message = "账号密码错误";
+      return Result.fail(message);
+    } else {
+      session.setAttribute("user", user);
+      return Result.success();
+    }
   }
 }

@@ -45,7 +45,9 @@ public class ProductService {
   }
 
   public void fill(List<Category> categorys) {
-    categorys.stream().forEach(this::fill);
+    for (Category category : categorys) {
+      fill(category);
+    }
   }
 
   public void fill(Category category) {
@@ -56,20 +58,17 @@ public class ProductService {
 
   public void fillByRow(List<Category> categorys) {
     int productNumberEachRow = 8;
-    categorys
-        .stream()
-        .forEach(
-            category -> {
-              List<Product> products = category.getProducts();
-              List<List<Product>> productsByRow = new ArrayList<>();
-              for (int i = 0; i < products.size(); i += productNumberEachRow) {
-                int size = i + productNumberEachRow;
-                size = size > products.size() ? products.size() : size;
-                List<Product> productsOfEachRow = products.subList(i, size);
-                productsByRow.add(productsOfEachRow);
-              }
-              category.setProductsByRow(productsByRow);
-            });
+    for (Category category : categorys) {
+      List<Product> products = category.getProducts();
+      List<List<Product>> productsByRow = new ArrayList<>();
+      for (int i = 0; i < products.size(); i += productNumberEachRow) {
+        int size = i + productNumberEachRow;
+        size = size > products.size() ? products.size() : size;
+        List<Product> productsOfEachRow = products.subList(i, size);
+        productsByRow.add(productsOfEachRow);
+      }
+      category.setProductsByRow(productsByRow);
+    }
   }
 
   public List<Product> listByCategory(Category category) {
