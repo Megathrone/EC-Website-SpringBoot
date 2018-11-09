@@ -44,12 +44,8 @@ public class ProductService {
     return new Page4Navigator<>(pageFromJPA, navigatePages);
   }
 
-  public List<Product> listByCategory(Category category) {
-    return productDAO.findByCategoryOrderById(category);
-  }
-
-  public void fill(List<Category> categories) {
-    categories.stream().forEach(this::fill);
+  public void fill(List<Category> categorys) {
+    categorys.stream().forEach(this::fill);
   }
 
   public void fill(Category category) {
@@ -58,9 +54,9 @@ public class ProductService {
     category.setProducts(products);
   }
 
-  public void fillByRow(List<Category> categories) {
+  public void fillByRow(List<Category> categorys) {
     int productNumberEachRow = 8;
-    categories
+    categorys
         .stream()
         .forEach(
             category -> {
@@ -68,10 +64,15 @@ public class ProductService {
               List<List<Product>> productsByRow = new ArrayList<>();
               for (int i = 0; i < products.size(); i += productNumberEachRow) {
                 int size = i + productNumberEachRow;
+                size = size > products.size() ? products.size() : size;
                 List<Product> productsOfEachRow = products.subList(i, size);
                 productsByRow.add(productsOfEachRow);
               }
-              category.setProductByRow(productsByRow);
+              category.setProductsByRow(productsByRow);
             });
+  }
+
+  public List<Product> listByCategory(Category category) {
+    return productDAO.findByCategoryOrderById(category);
   }
 }

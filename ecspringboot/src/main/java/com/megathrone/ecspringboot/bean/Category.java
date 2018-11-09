@@ -22,8 +22,7 @@ public class Category {
   String name;
 
   @Transient List<Product> products;
-
-  @Transient List<List<Product>> productByRow;
+  @Transient List<List<Product>> productsByRow;
 
   public int getId() {
     return id;
@@ -49,12 +48,12 @@ public class Category {
     this.products = products;
   }
 
-  public List<List<Product>> getProductByRow() {
-    return productByRow;
+  public List<List<Product>> getProductsByRow() {
+    return productsByRow;
   }
 
-  public void setProductByRow(List<List<Product>> productByRow) {
-    this.productByRow = productByRow;
+  public void setProductsByRow(List<List<Product>> productsByRow) {
+    this.productsByRow = productsByRow;
   }
 
   @Override

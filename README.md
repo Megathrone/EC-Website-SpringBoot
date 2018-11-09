@@ -1,5 +1,5 @@
-# EC-Website-SpringBoot
-Based on SpringBoot.
+# EC-Website-SpringBoot ![](https://img.shields.io/badge/Developing-1.0.0-blue.svg)
+Based on SpringBoot. 
 
 **Basic**: SpringBoot
 
