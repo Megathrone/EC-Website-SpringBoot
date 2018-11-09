@@ -1,9 +1,6 @@
 package com.megathrone.ecspringboot.dao;
- 
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.megathrone.ecspringboot.bean.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategoryDAO extends JpaRepository<Category,Integer>{
-
-}
+public interface CategoryDAO extends JpaRepository<Category, Integer> {}

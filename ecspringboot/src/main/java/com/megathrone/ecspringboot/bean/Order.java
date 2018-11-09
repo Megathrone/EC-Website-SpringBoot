@@ -44,8 +44,12 @@ public class Order {
   @Transient private int totalNumber;
   @Transient private String statusDesc;
 
+  public void setStatusDesc(String statusDesc) {
+    this.statusDesc = statusDesc;
+  }
+
   public String getStatusDesc() {
-    if (statusDesc != null) return statusDesc;
+    if (null != statusDesc) return statusDesc;
     String desc = "未知";
     switch (status) {
       case OrderService.waitPay:
@@ -73,32 +77,12 @@ public class Order {
     return statusDesc;
   }
 
-  public void setStatusDesc(String statusDesc) {
-    this.statusDesc = statusDesc;
-  }
-
   public int getId() {
     return id;
   }
 
   public void setId(int id) {
     this.id = id;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public String getOrderCode() {
-    return orderCode;
-  }
-
-  public void setOrderCode(String orderCode) {
-    this.orderCode = orderCode;
   }
 
   public String getAddress() {
@@ -115,14 +99,6 @@ public class Order {
 
   public void setPost(String post) {
     this.post = post;
-  }
-
-  public String getReceiver() {
-    return receiver;
-  }
-
-  public void setReceiver(String receiver) {
-    this.receiver = receiver;
   }
 
   public String getMobile() {
@@ -173,12 +149,28 @@ public class Order {
     this.confirmDate = confirmDate;
   }
 
-  public String getStatus() {
-    return status;
+  public String getReceiver() {
+    return receiver;
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setReceiver(String receiver) {
+    this.receiver = receiver;
+  }
+
+  public String getOrderCode() {
+    return orderCode;
+  }
+
+  public void setOrderCode(String orderCode) {
+    this.orderCode = orderCode;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 
   public List<OrderItem> getOrderItems() {
@@ -195,6 +187,14 @@ public class Order {
 
   public void setTotal(float total) {
     this.total = total;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public int getTotalNumber() {

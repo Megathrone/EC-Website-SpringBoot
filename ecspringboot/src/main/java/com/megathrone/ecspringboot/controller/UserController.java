@@ -1,4 +1,4 @@
-package com.megathrone.ecspringboot.controller;
+package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.service.UserService;
@@ -15,7 +15,8 @@ public class UserController {
   @GetMapping("/users")
   public Page4Navigator<User> list(
       @RequestParam(value = "start", defaultValue = "0") int start,
-      @RequestParam(value = "size", defaultValue = "5") int size) {
+      @RequestParam(value = "size", defaultValue = "5") int size)
+      throws Exception {
     start = start < 0 ? 0 : start;
     Page4Navigator<User> page = userService.list(start, size, 5);
     return page;

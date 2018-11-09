@@ -1,4 +1,4 @@
-package com.megathrone.ecspringboot.controller;
+package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.bean.ProductImage;
