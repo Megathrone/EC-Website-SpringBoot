@@ -4,6 +4,8 @@ import com.megathrone.ecspringboot.bean.Category;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.dao.ProductDAO;
 import com.megathrone.ecspringboot.util.Page4Navigator;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,7 @@ public class ProductService {
 
   @Autowired ProductDAO productDAO;
   @Autowired CategoryService categoryService;
+  @Autowired ProductImageService productImageService;
 
   public void add(Product bean) {
     productDAO.save(bean);
@@ -39,5 +42,36 @@ public class ProductService {
     Pageable pageable = new PageRequest(start, size, sort);
     Page<Product> pageFromJPA = productDAO.findByCategory(category, pageable);
     return new Page4Navigator<>(pageFromJPA, navigatePages);
+  }
+
+  public List<Product> listByCategory(Category category) {
+    return productDAO.findByCategoryOrderById(category);
+  }
+
+  public void fill(List<Category> categories) {
+    categories.stream().forEach(this::fill);
+  }
+
+  public void fill(Category category) {
+    List<Product> products = listByCategory(category);
+    productImageService.setFirstProdutImages(products);
+    category.setProducts(products);
+  }
+
+  public void fillByRow(List<Category> categories) {
+    int productNumberEachRow = 8;
+    categories
+        .stream()
+        .forEach(
+            category -> {
+              List<Product> products = category.getProducts();
+              List<List<Product>> productsByRow = new ArrayList<>();
+              for (int i = 0; i < products.size(); i += productNumberEachRow) {
+                int size = i + productNumberEachRow;
+                List<Product> productsOfEachRow = products.subList(i, size);
+                productsByRow.add(productsOfEachRow);
+              }
+              category.setProductByRow(productsByRow);
+            });
   }
 }

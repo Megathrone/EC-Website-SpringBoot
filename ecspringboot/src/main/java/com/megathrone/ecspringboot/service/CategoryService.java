@@ -1,6 +1,7 @@
 package com.megathrone.ecspringboot.service;
 
 import com.megathrone.ecspringboot.bean.Category;
+import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.dao.CategoryDAO;
 import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.util.List;
@@ -43,5 +44,28 @@ public class CategoryService {
 
   public void update(Category bean) {
     categoryDAO.save(bean);
+  }
+
+  public void removeCategoryFromProduct(List<Category> cs) {
+    cs.stream().forEach(this::removeCategoryFromProduct);
+  }
+
+  public void removeCategoryFromProduct(Category category) {
+    List<Product> products = category.getProducts();
+
+    products
+        .stream()
+        .filter(product -> product != null)
+        .forEach(product -> product.setCategory(null));
+
+    List<List<Product>> productByRow = category.getProductByRow();
+    if (productByRow != null) {
+      productByRow
+          .stream()
+          .forEach(
+              ps -> {
+                ps.stream().forEach(p -> p.setCategory(null));
+              });
+    }
   }
 }
