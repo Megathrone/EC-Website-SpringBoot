@@ -23,11 +23,11 @@ public class PropertyService {
   }
 
   public void delete(int id) {
-    propertyDAO.deleteById(id);
+    propertyDAO.delete(id);
   }
 
   public Property get(int id) {
-    return propertyDAO.findById(id).get();
+    return propertyDAO.findOne(id);
   }
 
   public void update(Property bean) {
