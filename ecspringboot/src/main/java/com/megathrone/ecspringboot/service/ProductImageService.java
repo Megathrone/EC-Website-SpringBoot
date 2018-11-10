@@ -21,11 +21,11 @@ public class ProductImageService {
   }
 
   public void delete(int id) {
-    productImageDAO.deleteById(id);
+    productImageDAO.delete(id);
   }
 
   public ProductImage get(int id) {
-    return productImageDAO.findById(id).get();
+    return productImageDAO.findOne(id);
   }
 
   public List<ProductImage> listSingleProductImages(Product product) {

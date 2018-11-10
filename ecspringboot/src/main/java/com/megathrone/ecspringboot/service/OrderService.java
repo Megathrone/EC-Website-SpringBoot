@@ -44,7 +44,7 @@ public class OrderService {
   }
 
   public Order get(int oid) {
-    return orderDAO.findById(oid).get();
+    return orderDAO.findOne(oid);
   }
 
   public void update(Order bean) {

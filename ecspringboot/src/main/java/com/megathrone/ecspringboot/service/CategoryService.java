@@ -34,11 +34,11 @@ public class CategoryService {
   }
 
   public void delete(int id) {
-    categoryDAO.deleteById(id);
+    categoryDAO.delete(id);
   }
 
   public Category get(int id) {
-    Category c = categoryDAO.findById(id).get();
+    Category c = categoryDAO.findOne(id);
     return c;
   }
 
