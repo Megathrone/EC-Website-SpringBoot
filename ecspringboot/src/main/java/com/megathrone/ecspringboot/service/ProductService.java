@@ -19,6 +19,8 @@ public class ProductService {
   @Autowired ProductDAO productDAO;
   @Autowired CategoryService categoryService;
   @Autowired ProductImageService productImageService;
+  @Autowired OrderItemService orderItemService;
+  @Autowired ReviewService reviewService;
 
   public void add(Product bean) {
     productDAO.save(bean);
@@ -73,5 +75,17 @@ public class ProductService {
 
   public List<Product> listByCategory(Category category) {
     return productDAO.findByCategoryOrderById(category);
+  }
+
+  public void setSaleAndReviewNumber(Product product) {
+    int saleCount = orderItemService.getSaleCount(product);
+    product.setSaleCount(saleCount);
+
+    int reviewCount = reviewService.getCount(product);
+    product.setReviewCount(reviewCount);
+  }
+
+  public void setSaleAndReviewNumber(List<Product> products) {
+    products.stream().forEach(this::setSaleAndReviewNumber);
   }
 }

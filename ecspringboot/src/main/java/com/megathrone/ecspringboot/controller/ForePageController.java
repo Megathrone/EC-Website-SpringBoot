@@ -1,5 +1,6 @@
 package com.megathrone.ecspringboot.web;
 
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -86,7 +87,8 @@ public class ForePageController {
   }
 
   @GetMapping("/forelogout")
-  public String logout() {
+  public String logout(HttpSession httpSession) {
+    httpSession.removeAttribute("user");
     return "redirect:home";
   }
 }
