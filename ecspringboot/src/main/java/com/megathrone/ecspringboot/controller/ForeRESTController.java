@@ -12,7 +12,13 @@ import com.megathrone.ecspringboot.service.ProductService;
 import com.megathrone.ecspringboot.service.PropertyValueService;
 import com.megathrone.ecspringboot.service.ReviewService;
 import com.megathrone.ecspringboot.service.UserService;
+import com.megathrone.ecspringboot.util.ProductAllComparator;
+import com.megathrone.ecspringboot.util.ProductDateComparator;
+import com.megathrone.ecspringboot.util.ProductPriceComparator;
+import com.megathrone.ecspringboot.util.ProductReviewComparator;
+import com.megathrone.ecspringboot.util.ProductSaleCountComparator;
 import com.megathrone.ecspringboot.util.Result;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,5 +104,43 @@ public class ForeRESTController {
     map.put("reviews", reviews);
 
     return Result.success(map);
+  }
+
+  @GetMapping("/forecheckLogin")
+  public Object checkLogin(HttpSession httpSession) {
+    User user = (User) httpSession.getAttribute("user");
+    if (user != null) {
+      return Result.success();
+    }
+    return Result.fail("未登录");
+  }
+
+  @GetMapping("forecategory/{cid}")
+  public Object category(@PathVariable("cid") int cid, String sort) {
+    Category category = categoryService.get(cid);
+    productService.fill(category);
+    productService.setSaleAndReviewNumber(category.getProducts());
+    categoryService.removeCategoryFromProduct(category);
+
+    if (sort != null) {
+      switch (sort) {
+        case "review":
+          Collections.sort(category.getProducts(), new ProductReviewComparator());
+          break;
+        case "date":
+          Collections.sort(category.getProducts(), new ProductDateComparator());
+          break;
+        case "saleCount":
+          Collections.sort(category.getProducts(), new ProductSaleCountComparator());
+          break;
+        case "price":
+          Collections.sort(category.getProducts(), new ProductPriceComparator());
+          break;
+        case "all":
+          Collections.sort(category.getProducts(), new ProductAllComparator());
+          break;
+      }
+    }
+    return category;
   }
 }
