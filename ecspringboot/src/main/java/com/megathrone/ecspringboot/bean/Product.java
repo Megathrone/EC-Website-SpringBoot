@@ -2,6 +2,7 @@ package com.megathrone.ecspringboot.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Entity
 @Table(name = "product")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
-@Document(indexName = "ecspringboot_springboot", type = "product")
+@Document(indexName = "ec_springboot", type = "product")
 public class Product {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,12 @@ public class Product {
   private float promotePrice;
   private int stock;
   private Date createDate;
+
   @Transient private ProductImage firstProductImage;
+  @Transient private List<ProductImage> productSingleImages;
+  @Transient private List<ProductImage> productDetailImages;
+  @Transient private int reviewCount;
+  @Transient private int saleCount;
 
   public int getId() {
     return id;
@@ -106,5 +112,64 @@ public class Product {
 
   public void setFirstProductImage(ProductImage firstProductImage) {
     this.firstProductImage = firstProductImage;
+  }
+
+  public List<ProductImage> getProductSingleImages() {
+    return productSingleImages;
+  }
+
+  public void setProductSingleImages(List<ProductImage> productSingleImages) {
+    this.productSingleImages = productSingleImages;
+  }
+
+  public List<ProductImage> getProductDetailImages() {
+    return productDetailImages;
+  }
+
+  public void setProductDetailImages(List<ProductImage> productDetailImages) {
+    this.productDetailImages = productDetailImages;
+  }
+
+  public int getReviewCount() {
+    return reviewCount;
+  }
+
+  public void setReviewCount(int reviewCount) {
+    this.reviewCount = reviewCount;
+  }
+
+  public int getSaleCount() {
+    return saleCount;
+  }
+
+  public void setSaleCount(int saleCount) {
+    this.saleCount = saleCount;
+  }
+
+  @Override
+  public String toString() {
+    return "Product [id="
+        + id
+        + ", category="
+        + category
+        + ", name="
+        + name
+        + ", subTitle="
+        + subTitle
+        + ", originalPrice="
+        + originalPrice
+        + ", promotePrice="
+        + promotePrice
+        + ", stock="
+        + stock
+        + ", createDate="
+        + createDate
+        + ", firstProductImage="
+        + firstProductImage
+        + ", reviewCount="
+        + reviewCount
+        + ", saleCount="
+        + saleCount
+        + "]";
   }
 }
