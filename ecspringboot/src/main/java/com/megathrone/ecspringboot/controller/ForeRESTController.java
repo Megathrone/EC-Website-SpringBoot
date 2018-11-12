@@ -1,12 +1,14 @@
 package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Category;
+import com.megathrone.ecspringboot.bean.OrderItem;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.bean.ProductImage;
 import com.megathrone.ecspringboot.bean.PropertyValue;
 import com.megathrone.ecspringboot.bean.Review;
 import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.service.CategoryService;
+import com.megathrone.ecspringboot.service.OrderItemService;
 import com.megathrone.ecspringboot.service.ProductImageService;
 import com.megathrone.ecspringboot.service.ProductService;
 import com.megathrone.ecspringboot.service.PropertyValueService;
@@ -39,6 +41,7 @@ public class ForeRESTController {
   @Autowired ProductImageService productImageService;
   @Autowired PropertyValueService propertyValueService;
   @Autowired ReviewService reviewService;
+  @Autowired OrderItemService orderItemService;
 
   @GetMapping("/forehome")
   public Object home() {
@@ -151,5 +154,38 @@ public class ForeRESTController {
     productImageService.setFirstProdutImages(ps);
     productService.setSaleAndReviewNumber(ps);
     return ps;
+  }
+
+  @GetMapping("forebuyone")
+  public Object buyone(int pid, int num, HttpSession session) {
+    return buyoneAndAddCart(pid, num, session);
+  }
+
+  private int buyoneAndAddCart(int pid, int num, HttpSession session) {
+    Product product = productService.get(pid);
+    int oiid = 0;
+
+    User user = (User) session.getAttribute("user");
+    boolean found = false;
+    List<OrderItem> ois = orderItemService.listByUser(user);
+    for (OrderItem oi : ois) {
+      if (oi.getProduct().getId() == product.getId()) {
+        oi.setNumber(oi.getNumber() + num);
+        orderItemService.update(oi);
+        found = true;
+        oiid = oi.getId();
+        break;
+      }
+    }
+    if (!found) {
+      OrderItem orderItem = new OrderItem();
+      orderItem.setUser(user);
+      orderItem.setProduct(product);
+      orderItem.setNumber(num);
+      orderItemService.add(orderItem);
+      oiid = orderItem.getId();
+    }
+
+    return oiid;
   }
 }
