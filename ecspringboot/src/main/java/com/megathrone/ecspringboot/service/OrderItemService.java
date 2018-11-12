@@ -3,6 +3,7 @@ package com.megathrone.ecspringboot.service;
 import com.megathrone.ecspringboot.bean.Order;
 import com.megathrone.ecspringboot.bean.OrderItem;
 import com.megathrone.ecspringboot.bean.Product;
+import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.dao.OrderItemDAO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,9 @@ public class OrderItemService {
 
   public List<OrderItem> listByOrder(Order order) {
     return orderItemDAO.findByOrderOrderByIdDesc(order);
+  }
+
+  public List<OrderItem> listByUser(User user) {
+    return orderItemDAO.findByUserAndOrderIsNull(user);
   }
 }
