@@ -1,5 +1,6 @@
 package com.megathrone.ecspringboot.service;
 
+import com.megathrone.ecspringboot.bean.OrderItem;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.bean.ProductImage;
 import com.megathrone.ecspringboot.dao.ProductImageDAO;
@@ -46,5 +47,13 @@ public class ProductImageService {
 
   public void setFirstProdutImages(List<Product> products) {
     for (Product product : products) setFirstProdutImage(product);
+  }
+
+  public void setFirstProductImagesOnOrderItems(List<OrderItem> ois) {
+    ois.stream()
+        .forEach(
+            orderItem -> {
+              setFirstProdutImage(orderItem.getProduct());
+            });
   }
 }

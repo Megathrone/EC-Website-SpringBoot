@@ -20,6 +20,7 @@ import com.megathrone.ecspringboot.util.ProductPriceComparator;
 import com.megathrone.ecspringboot.util.ProductReviewComparator;
 import com.megathrone.ecspringboot.util.ProductSaleCountComparator;
 import com.megathrone.ecspringboot.util.Result;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +41,8 @@ public class ForeRESTController {
   @Autowired UserService userService;
   @Autowired ProductImageService productImageService;
   @Autowired PropertyValueService propertyValueService;
-  @Autowired ReviewService reviewService;
   @Autowired OrderItemService orderItemService;
+  @Autowired ReviewService reviewService;
 
   @GetMapping("/forehome")
   public Object home() {
@@ -91,6 +92,7 @@ public class ForeRESTController {
   @GetMapping("/foreproduct/{pid}")
   public Object product(@PathVariable("pid") int pid) {
     Product product = productService.get(pid);
+
     List<ProductImage> productSingleImages = productImageService.listSingleProductImages(product);
     List<ProductImage> productDetailImages = productImageService.listDetailProductImages(product);
     product.setProductSingleImages(productSingleImages);
@@ -109,42 +111,44 @@ public class ForeRESTController {
     return Result.success(map);
   }
 
-  @GetMapping("/forecheckLogin")
-  public Object checkLogin(HttpSession httpSession) {
-    User user = (User) httpSession.getAttribute("user");
-    if (user != null) {
-      return Result.success();
-    }
+  @GetMapping("forecheckLogin")
+  public Object checkLogin(HttpSession session) {
+    User user = (User) session.getAttribute("user");
+    if (null != user) return Result.success();
     return Result.fail("未登录");
   }
 
   @GetMapping("forecategory/{cid}")
-  public Object category(@PathVariable("cid") int cid, String sort) {
-    Category category = categoryService.get(cid);
-    productService.fill(category);
-    productService.setSaleAndReviewNumber(category.getProducts());
-    categoryService.removeCategoryFromProduct(category);
+  public Object category(@PathVariable int cid, String sort) {
+    Category c = categoryService.get(cid);
+    productService.fill(c);
+    productService.setSaleAndReviewNumber(c.getProducts());
+    categoryService.removeCategoryFromProduct(c);
 
-    if (sort != null) {
+    if (null != sort) {
       switch (sort) {
         case "review":
-          Collections.sort(category.getProducts(), new ProductReviewComparator());
+          Collections.sort(c.getProducts(), new ProductReviewComparator());
           break;
         case "date":
-          Collections.sort(category.getProducts(), new ProductDateComparator());
+          Collections.sort(c.getProducts(), new ProductDateComparator());
           break;
+
         case "saleCount":
-          Collections.sort(category.getProducts(), new ProductSaleCountComparator());
+          Collections.sort(c.getProducts(), new ProductSaleCountComparator());
           break;
+
         case "price":
-          Collections.sort(category.getProducts(), new ProductPriceComparator());
+          Collections.sort(c.getProducts(), new ProductPriceComparator());
           break;
+
         case "all":
-          Collections.sort(category.getProducts(), new ProductAllComparator());
+          Collections.sort(c.getProducts(), new ProductAllComparator());
           break;
       }
     }
-    return category;
+
+    return c;
   }
 
   @PostMapping("foresearch")
@@ -159,6 +163,26 @@ public class ForeRESTController {
   @GetMapping("forebuyone")
   public Object buyone(int pid, int num, HttpSession session) {
     return buyoneAndAddCart(pid, num, session);
+  }
+
+  @GetMapping("forebuy")
+  public Object buy(String[] oiid, HttpSession session) {
+    List<OrderItem> orderItems = new ArrayList<>();
+    float total = 0;
+    for (String strid : oiid) {
+      int id = Integer.parseInt(strid);
+      OrderItem oi = orderItemService.get(id);
+      total += oi.getProduct().getPromotePrice() + oi.getNumber();
+      orderItems.add(oi);
+    }
+    productImageService.setFirstProductImagesOnOrderItems(orderItems);
+
+    session.setAttribute("ois", orderItems);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("orderItems", orderItems);
+    map.put("total", total);
+    return Result.success();
   }
 
   private int buyoneAndAddCart(int pid, int num, HttpSession session) {
@@ -177,15 +201,15 @@ public class ForeRESTController {
         break;
       }
     }
-    if (!found) {
-      OrderItem orderItem = new OrderItem();
-      orderItem.setUser(user);
-      orderItem.setProduct(product);
-      orderItem.setNumber(num);
-      orderItemService.add(orderItem);
-      oiid = orderItem.getId();
-    }
 
+    if (!found) {
+      OrderItem oi = new OrderItem();
+      oi.setUser(user);
+      oi.setProduct(product);
+      oi.setNumber(num);
+      orderItemService.add(oi);
+      oiid = oi.getId();
+    }
     return oiid;
   }
 }
