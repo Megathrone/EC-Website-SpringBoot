@@ -165,26 +165,6 @@ public class ForeRESTController {
     return buyoneAndAddCart(pid, num, session);
   }
 
-  @GetMapping("forebuy")
-  public Object buy(String[] oiid, HttpSession session) {
-    List<OrderItem> orderItems = new ArrayList<>();
-    float total = 0;
-    for (String strid : oiid) {
-      int id = Integer.parseInt(strid);
-      OrderItem oi = orderItemService.get(id);
-      total += oi.getProduct().getPromotePrice() + oi.getNumber();
-      orderItems.add(oi);
-    }
-    productImageService.setFirstProductImagesOnOrderItems(orderItems);
-
-    session.setAttribute("ois", orderItems);
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("orderItems", orderItems);
-    map.put("total", total);
-    return Result.success();
-  }
-
   private int buyoneAndAddCart(int pid, int num, HttpSession session) {
     Product product = productService.get(pid);
     int oiid = 0;
@@ -213,9 +193,31 @@ public class ForeRESTController {
     return oiid;
   }
 
+  @GetMapping("forebuy")
+  public Object buy(String[] oiid, HttpSession session) {
+    List<OrderItem> orderItems = new ArrayList<>();
+    float total = 0;
+
+    for (String strid : oiid) {
+      int id = Integer.parseInt(strid);
+      OrderItem oi = orderItemService.get(id);
+      total += oi.getProduct().getPromotePrice() * oi.getNumber();
+      orderItems.add(oi);
+    }
+
+    productImageService.setFirstProductImagesOnOrderItems(orderItems);
+
+    session.setAttribute("ois", orderItems);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("orderItems", orderItems);
+    map.put("total", total);
+    return Result.success(map);
+  }
+
   @GetMapping("foreaddCart")
-  public Object addCart(int pid, int num, HttpSession httpSession) {
-    buyoneAndAddCart(pid, num, httpSession);
+  public Object addCart(int pid, int num, HttpSession session) {
+    buyoneAndAddCart(pid, num, session);
     return Result.success();
   }
 
@@ -225,5 +227,29 @@ public class ForeRESTController {
     List<OrderItem> ois = orderItemService.listByUser(user);
     productImageService.setFirstProductImagesOnOrderItems(ois);
     return ois;
+  }
+
+  @GetMapping("forechangeOrderItem")
+  public Object changeOrderItem(HttpSession session, int pid, int num) {
+    User user = (User) session.getAttribute("user");
+    if (null == user) return Result.fail("未登录");
+
+    List<OrderItem> ois = orderItemService.listByUser(user);
+    for (OrderItem oi : ois) {
+      if (oi.getProduct().getId() == pid) {
+        oi.setNumber(num);
+        orderItemService.update(oi);
+        break;
+      }
+    }
+    return Result.success();
+  }
+
+  @GetMapping("foredeleteOrderItem")
+  public Object deleteOrderItem(HttpSession session, int oiid) {
+    User user = (User) session.getAttribute("user");
+    if (null == user) return Result.fail("未登录");
+    orderItemService.delete(oiid);
+    return Result.success();
   }
 }
