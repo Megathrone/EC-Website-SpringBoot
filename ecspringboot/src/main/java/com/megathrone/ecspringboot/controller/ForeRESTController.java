@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.HtmlUtils;
@@ -297,5 +298,31 @@ public class ForeRESTController {
     List<Order> os = orderService.listByUserWithoutDelete(user);
     orderService.removeOrderFromOrderItem(os);
     return os;
+  }
+
+  @GetMapping("foreconfirmPay")
+  public Object confirmPay(int oid) {
+    Order o = orderService.get(oid);
+    orderItemService.fill(o);
+    orderService.cacl(o);
+    orderService.removeOrderFromOrderItem(o);
+    return o;
+  }
+
+  @GetMapping("foreorderConfirmed")
+  public Object orderConfirmed(int oid) {
+    Order o = orderService.get(oid);
+    o.setStatus(OrderService.waitReview);
+    o.setConfirmDate(new Date());
+    orderService.update(o);
+    return Result.success();
+  }
+
+  @PutMapping("foredeleteOrder")
+  public Object deleteOrder(int oid) {
+    Order o = orderService.get(oid);
+    o.setStatus(OrderService.delete);
+    orderService.update(o);
+    return Result.success();
   }
 }
