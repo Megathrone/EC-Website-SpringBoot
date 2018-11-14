@@ -2,6 +2,7 @@ package com.megathrone.ecspringboot.service;
 
 import com.megathrone.ecspringboot.bean.Order;
 import com.megathrone.ecspringboot.bean.OrderItem;
+import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.dao.OrderDAO;
 import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.util.List;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
@@ -22,6 +25,7 @@ public class OrderService {
   public static final String delete = "delete";
 
   @Autowired OrderDAO orderDAO;
+  @Autowired OrderItemService orderItemService;
 
   public Page4Navigator<Order> list(int start, int size, int navigatePages) {
     Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -49,5 +53,34 @@ public class OrderService {
 
   public void update(Order bean) {
     orderDAO.save(bean);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, rollbackForClassName = "Exception")
+  public float add(Order order, List<OrderItem> ois) {
+    float total = 0;
+    add(order);
+
+    if (false) throw new RuntimeException();
+
+    for (OrderItem oi : ois) {
+      oi.setOrder(order);
+      orderItemService.update(oi);
+      total += oi.getProduct().getPromotePrice() * oi.getNumber();
+    }
+    return total;
+  }
+
+  public void add(Order order) {
+    orderDAO.save(order);
+  }
+
+  public List<Order> listByUserWithoutDelete(User user) {
+    List<Order> orders = listByUserAndNotDeleted(user);
+    orderItemService.fill(orders);
+    return orders;
+  }
+
+  public List<Order> listByUserAndNotDeleted(User user) {
+    return orderDAO.findByUserAndStatusNotOrderByIdDesc(user, OrderService.delete);
   }
 }
