@@ -1,6 +1,7 @@
 package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Category;
+import com.megathrone.ecspringboot.bean.Order;
 import com.megathrone.ecspringboot.bean.OrderItem;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.bean.ProductImage;
@@ -9,6 +10,7 @@ import com.megathrone.ecspringboot.bean.Review;
 import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.service.CategoryService;
 import com.megathrone.ecspringboot.service.OrderItemService;
+import com.megathrone.ecspringboot.service.OrderService;
 import com.megathrone.ecspringboot.service.ProductImageService;
 import com.megathrone.ecspringboot.service.ProductService;
 import com.megathrone.ecspringboot.service.PropertyValueService;
@@ -20,12 +22,15 @@ import com.megathrone.ecspringboot.util.ProductPriceComparator;
 import com.megathrone.ecspringboot.util.ProductReviewComparator;
 import com.megathrone.ecspringboot.util.ProductSaleCountComparator;
 import com.megathrone.ecspringboot.util.Result;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +48,7 @@ public class ForeRESTController {
   @Autowired PropertyValueService propertyValueService;
   @Autowired OrderItemService orderItemService;
   @Autowired ReviewService reviewService;
+  @Autowired OrderService orderService;
 
   @GetMapping("/forehome")
   public Object home() {
@@ -251,5 +257,34 @@ public class ForeRESTController {
     if (null == user) return Result.fail("未登录");
     orderItemService.delete(oiid);
     return Result.success();
+  }
+
+  @PostMapping("forecreateOrder")
+  public Object createOrder(@RequestBody Order order, HttpSession session) {
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+      return Result.fail("未登录");
+    }
+    String orderCode =
+        new SimpleDateFormat("yyyyMmddHHmmssSSS").format(new Date()) + RandomUtils.nextInt(10000);
+    order.setOrderCode(orderCode);
+    order.setCreateDate(new Date());
+    order.setUser(user);
+    order.setStatus(OrderService.waitPay);
+    List<OrderItem> ois = (List<OrderItem>) session.getAttribute("ois");
+    float total = orderService.add(order, ois);
+    Map<String, Object> map = new HashMap<>();
+    map.put("oid", order.getId());
+    map.put("total", total);
+    return Result.success(map);
+  }
+
+  @GetMapping("forepayed")
+  public Object payed(int oid) {
+    Order order = orderService.get(oid);
+    order.setStatus(OrderService.waitDelivery);
+    order.setPayDate(new Date());
+    orderService.update(order);
+    return order;
   }
 }
