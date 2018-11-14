@@ -1,7 +1,6 @@
 package com.megathrone.ecspringboot.web;
 
 import com.megathrone.ecspringboot.bean.Category;
-import com.megathrone.ecspringboot.bean.OrderItem;
 import com.megathrone.ecspringboot.bean.Product;
 import com.megathrone.ecspringboot.bean.ProductImage;
 import com.megathrone.ecspringboot.bean.PropertyValue;
@@ -211,5 +210,19 @@ public class ForeRESTController {
       oiid = oi.getId();
     }
     return oiid;
+  }
+
+  @GetMapping("foreaddCart")
+  public Object addCart(int pid, int num, HttpSession httpSession) {
+    buyoneAndAddCart(pid, num, httpSession);
+    return Result.success();
+  }
+
+  @GetMapping("forecart")
+  public Object cart(HttpSession session) {
+    User user = (User) session.getAttribute("user");
+    List<OrderItem> ois = orderItemService.listByUser(user);
+    productImageService.setFirstProductImagesOnOrderItems(ois);
+    return ois;
   }
 }
