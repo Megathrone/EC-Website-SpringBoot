@@ -2,6 +2,7 @@ package com.megathrone.ecspringboot.service;
 
 import com.megathrone.ecspringboot.bean.Order;
 import com.megathrone.ecspringboot.bean.OrderItem;
+import com.megathrone.ecspringboot.bean.User;
 import com.megathrone.ecspringboot.dao.OrderDAO;
 import com.megathrone.ecspringboot.util.Page4Navigator;
 import java.util.List;
@@ -71,5 +72,15 @@ public class OrderService {
 
   public void add(Order order) {
     orderDAO.save(order);
+  }
+
+  public List<Order> listByUserWithoutDelete(User user) {
+    List<Order> orders = listByUserAndNotDeleted(user);
+    orderItemService.fill(orders);
+    return orders;
+  }
+
+  public List<Order> listByUserAndNotDeleted(User user) {
+    return orderDAO.findByUserAndStatusNotOrderByIdDesc(user, OrderService.delete);
   }
 }
