@@ -212,4 +212,10 @@ public class ForeRESTController {
     }
     return oiid;
   }
+
+  @GetMapping("foreaddCart")
+  public Object addCart(int pid, int num, HttpSession httpSession) {
+    buyoneAndAddCart(pid, num, httpSession);
+    return Result.success();
+  }
 }
