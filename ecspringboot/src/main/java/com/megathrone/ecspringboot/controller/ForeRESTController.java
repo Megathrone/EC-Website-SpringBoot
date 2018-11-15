@@ -230,7 +230,7 @@ public class ForeRESTController {
       orderItems.add(oi);
     }
 
-    productImageService.setFirstProductImagesOnOrderItems(orderItems);
+    productImageService.setFirstProdutImagesOnOrderItems(orderItems);
 
     session.setAttribute("ois", orderItems);
 
@@ -250,7 +250,7 @@ public class ForeRESTController {
   public Object cart(HttpSession session) {
     User user = (User) session.getAttribute("user");
     List<OrderItem> ois = orderItemService.listByUser(user);
-    productImageService.setFirstProductImagesOnOrderItems(ois);
+    productImageService.setFirstProdutImagesOnOrderItems(ois);
     return ois;
   }
 
